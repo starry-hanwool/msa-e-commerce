@@ -1,0 +1,4 @@
+include 'common:mall-util-app'
+include 'services:coupon-service'
+include 'services:order-service'
+include 'services:mall-composite'

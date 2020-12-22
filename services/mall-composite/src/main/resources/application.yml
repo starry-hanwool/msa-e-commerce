@@ -1,0 +1,17 @@
+server:
+    port: 7000
+    error:
+        include-message: always
+
+app:
+    coupon-service:
+        host: localhost
+        port: 7001
+    order-service:
+        host: localhost
+        port: 7002
+
+logging:
+    level:
+        root: INFO
+        me.hanwool: DEBUG
