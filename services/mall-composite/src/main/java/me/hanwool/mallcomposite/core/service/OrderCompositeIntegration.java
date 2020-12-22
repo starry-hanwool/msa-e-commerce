@@ -55,7 +55,7 @@ public class OrderCompositeIntegration implements CouponService, OrderService {
         });
     }
 
-    @Override
+/*    @Override
 //    @GetMapping(value = "/coupon/{couponId}", consumes = MediaType.APPLICATION_JSON_VALUE)
 //    public CouponDTO getCoupon(@PathVariable Long couponId) {
     public CouponDTO getCoupon(Long couponId) {
@@ -86,7 +86,7 @@ public class OrderCompositeIntegration implements CouponService, OrderService {
             }
         }
 
-    }
+    }*/
 
     @Override
 //    @GetMapping(value = "/order/{orderId}", consumes = MediaType.APPLICATION_JSON_VALUE)

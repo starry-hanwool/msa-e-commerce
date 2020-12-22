@@ -37,6 +37,8 @@ dependencies {
 }
 
 test {
+	exclude 'me/hanwool/mallcomposite/application/api**'
+
 	outputs.dir snippetsDir
 	useJUnitPlatform()
 }

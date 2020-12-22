@@ -4,7 +4,6 @@ import me.hanwool.mallutilapp.dto.*;
 
 public interface CouponService {
 
-//    @GetMapping(value = "/coupon/{couponId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    CouponDTO getCoupon(Long couponId);
+//    CouponDTO getCoupon(Long couponId);
 
 }

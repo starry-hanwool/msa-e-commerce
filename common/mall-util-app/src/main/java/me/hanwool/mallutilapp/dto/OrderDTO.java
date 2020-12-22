@@ -1,11 +1,17 @@
 package me.hanwool.mallutilapp.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
-@Builder
 public class OrderDTO {
 
-    private Long orderId;
+    private final Long orderId;
+
+    public OrderDTO() {
+        orderId = null;
+    }
+
+    public OrderDTO(Long orderId) {
+        this.orderId = orderId;
+    }
 }

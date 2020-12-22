@@ -1,3 +1,8 @@
+logging:
+    level:
+        root: INFO
+        me.hanwool: DEBUG
+
 server:
     port: 7000
     error:
@@ -11,7 +16,71 @@ app:
         host: localhost
         port: 7002
 
+---
+spring:
+    config:
+        activate:
+            on-profile: dev
 logging:
     level:
         root: INFO
         me.hanwool: DEBUG
+
+server:
+    port: 7000
+    error:
+        include-message: always
+
+app:
+    coupon-service:
+        host: localhost
+        port: 7001
+    order-service:
+        host: localhost
+        port: 7002
+
+---
+spring:
+    config:
+        activate:
+            on-profile: stage
+
+logging:
+    level:
+        root: INFO
+        me.hanwool: INFO
+
+server:
+    port: 8080
+    error:
+        include-message: never
+
+app:
+    coupon-service:
+        host: coupon
+        port: 8080
+    order-service:
+        host: order
+        port: 8080
+
+---
+spring:
+    config:
+        activate:
+            on-profile: prod
+
+logging:
+    level:
+        root: INFO
+        me.hanwool: INFO
+
+server:
+    port: 8080
+
+app:
+    coupon-service:
+        host: coupon
+        port: 8080
+    order-service:
+        host: order
+        port: 8080

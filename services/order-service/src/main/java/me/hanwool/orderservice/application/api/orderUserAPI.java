@@ -22,9 +22,7 @@ public class orderUserAPI {
         // test
         if (orderId == 13) throw new NotFoundException("No order found for orderId: " + orderId);
 
-        return OrderDTO.builder()
-                .orderId(orderId)
-                .build();
+        return new OrderDTO(orderId);
     }
 
 }

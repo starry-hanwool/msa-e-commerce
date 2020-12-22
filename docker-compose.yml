@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  coupon:
+    build: services/coupon-service
+    mem_limit: 350m
+    environment:
+      - SPRING_PROFILES_ACTIVE=stage
+
+  order:
+    build: services/order-service
+    mem_limit: 350m
+    environment:
+      - SPRING_PROFILES_ACTIVE=stage
+
+  mall-composite:
+    build: services/mall-composite
+    mem_limit: 350m
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=stage
