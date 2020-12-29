@@ -1,7 +1,7 @@
 plugins {
 	id 'org.springframework.boot' version '2.4.1'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-	id 'org.asciidoctor.convert' version '1.5.8'
+	id 'org.asciidoctor.convert' version '1.5.9.2'
 	id 'java'
 }
 
@@ -17,6 +17,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://repo.spring.io/libs-snapshot' }
 }
 
 ext {
@@ -30,14 +31,18 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation ('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'junit', module: 'junit;'
+	}
 	testImplementation 'io.projectreactor:reactor-test'
 //	testImplementation 'org.springframework.kafka:spring-kafka-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-webtestclient:2.0.6.BUILD-SNAPSHOT'
+	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor:2.0.6.BUILD-SNAPSHOT'
 }
 
 test {
-	exclude 'me/hanwool/mallcomposite/application/api**'
+	ignoreFailures = true
 
 	outputs.dir snippetsDir
 	useJUnitPlatform()
@@ -46,4 +51,22 @@ test {
 asciidoctor {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+//bootJar {
+//	dependsOn asciidoctor
+//	from ("${asciidoctor.outputDir}/html5") {
+//		into 'static/docs'
+//	}
+//}
+
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+
+	from file("build/asciidoc/html5/")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
 }

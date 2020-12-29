@@ -1,4 +1,4 @@
-package me.hanwool.mallcomposite.core;
+package me.hanwool.mallutilapp.dto;
 
 import lombok.Builder;
 import lombok.Getter;

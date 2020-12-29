@@ -20,7 +20,7 @@ logging:
     me.hanwool: DEBUG
 
 server:
-  port: 7002
+  port: 8080
 
 ---
 spring:

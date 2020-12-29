@@ -1,0 +1,65 @@
+= [open-api] order-composite API document
+Table
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+[[introduction]]
+== 소개
+
+MSA 이커머스 서비스 API
+
+
+=== Header
+
+|===
+| name | 설명
+
+| `Authorization`
+| API를 사용하기 위한 인증 키
+|===
+
+=== 공통 Response Body
+
+|===
+| field | 설명
+
+| `code`
+| 응답 코드
+
+| `message`
+| 응답 메시지
+
+| `data`
+| 반환 값
+|===
+
+[[hello]]
+== Hello World API
+
+=== Request
+
+CURL:
+
+include::{snippets}/get-order-api/curl-request.adoc[]
+
+Request Body:
+
+include::{snippets}/get-order-api/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/get-order-api/http-request.adoc[]
+
+=== Response
+
+Response Body:
+
+include::{snippets}/get-order-api/response-body.adoc[]
+
+Response HTTP Example:
+
+include::{snippets}/get-order-api/http-response.adoc[]

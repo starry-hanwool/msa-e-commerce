@@ -1,4 +1,4 @@
-package me.hanwool.mallcomposite.core.coupon.ports;
+package me.hanwool.mallutilapp.port;
 
 import me.hanwool.mallutilapp.dto.*;
 
