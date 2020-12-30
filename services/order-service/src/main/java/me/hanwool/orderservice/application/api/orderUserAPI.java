@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.hanwool.mallutilapp.dto.*;
 import me.hanwool.mallutilapp.value.ResponseCode;
+import me.hanwool.orderservice.domain.Orders;
+import me.hanwool.orderservice.domain.mapper.OrderMapper;
 import me.hanwool.orderservice.domain.service.OrderServiceImpl;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +29,9 @@ public class orderUserAPI {
         OrderDTO response = null;
 
         try {
-            ModelMapper modelMapper = new ModelMapper();
-            response = modelMapper.map(orderService.getOrder(orderId), OrderDTO.class);
-//            response = orderService.getOrder(orderId);
+//            ModelMapper modelMapper = new ModelMapper();
+//            response = modelMapper.map(orderService.getOrder(orderId), OrderDTO.class);
+            response = OrderMapper.INSTANCE.ordersToDTO(orderService.getOrder(orderId));
 
         } catch (Exception e) {
             log.debug(e.getMessage());

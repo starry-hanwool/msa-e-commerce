@@ -2,16 +2,15 @@ package me.hanwool.mallutilapp.dto;
 
 import lombok.*;
 
+@Builder
+//@Value
 @Getter
+//@RequiredArgsConstructor
+@AllArgsConstructor
+//@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderDTO {
 
-    private final Long orderId;
+    private Long orderId;
+    private Long productId;
 
-    public OrderDTO() {
-        orderId = null;
-    }
-
-    public OrderDTO(Long orderId) {
-        this.orderId = orderId;
-    }
 }
