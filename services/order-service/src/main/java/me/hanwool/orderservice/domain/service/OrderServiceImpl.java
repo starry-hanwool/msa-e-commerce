@@ -10,7 +10,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Orders getOrder(Long orderId) {
-        if (orderId == 13) throw new NotFoundException("No order found for orderId: " + orderId);
+        if (orderId == 13) {
+            return null;
+        }
+//        if (orderId == 13) throw new NotFoundException("No order found for orderId: " + orderId);
 
         return Orders.builder()
                 .orderId(orderId)

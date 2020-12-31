@@ -1,6 +1,7 @@
 package me.hanwool.orderservice.domain;
 
 import lombok.*;
+import org.springframework.data.annotation.Version;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,16 +9,18 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 
 @Builder
-//@Entity
-//@Value
+@Entity
 @Getter
 //@RequiredArgsConstructor
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Orders {
 
-//    @Id @GeneratedValue
+    @Id @GeneratedValue
     private Long orderId;
+
+    @Version
+    private int version;
 
     private Long productId;
 

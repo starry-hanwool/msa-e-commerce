@@ -1,84 +1,100 @@
 package me.hanwool.mallcomposite.application.api;
 
+import me.hanwool.mallcomposite.core.service.OrderCompositeServiceImpl;
+import me.hanwool.mallutilapp.dto.OrderAggregate;
+import me.hanwool.mallutilapp.value.ResponseCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-//import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
-//import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
 
-@SpringBootTest //
-//@WebFluxTest
-//@WebFluxTest(OderCompositeAPIImpl.class)
-//@AutoConfigureWebTestClient
+
+@WebFluxTest(OderCompositeAPI.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-//@AutoConfigureRestDocs
 class OderCompositeAPITest {
 
-    // test !!!!!
-    private static final int ORDER_ID_OK = 1;
-    private static final int ORDER_ID_NOT_FOUND = 2;
-    ////////////
-
-//    @Autowired
-//    private ApplicationContext context;
-
-//    private WebTestClient client;
-//
-//    @BeforeEach
-//    void setup(ApplicationContext applicationContext, RestDocumentationContextProvider restDocumentation) {
-//        this.client = WebTestClient.bindToApplicationContext(applicationContext)
-//                .configureClient()
-//                .filter(documentationConfiguration(restDocumentation))
-//                .build();
-//    };
-//    @BeforeEach
-//    void setup(RestDocumentationContextProvider restDocumentation) {
-//        this.client = WebTestClient.bindToApplicationContext(this.context)
-//                .configureClient()
-//                .filter(documentationConfiguration(restDocumentation))
-//                .build();
-//    };
-
- /*   @Test
-    @DisplayName("주문 정보 확인")
-    void getOrderById() throws Exception {
-        client.get()
-                .uri("/open-api/order/" + ORDER_ID_OK)
-                .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
-//                .accept(APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody()
-                .jsonPath("$.orderId").isEqualTo(ORDER_ID_OK)
-                .consumeWith(document("sample"));
-    }*/
+    private static final String OPEN_API_ORDER_URI = "/open-api/order/";
 
     @Autowired
+    private ApplicationContext context;
+
+    private WebTestClient client;
+
+    @MockBean
+    private OrderCompositeServiceImpl service;
+
+    @BeforeEach
+    void setup(RestDocumentationContextProvider restDocumentation) {
+        this.client = WebTestClient.bindToApplicationContext(this.context)
+                .configureClient()
+                .filter(documentationConfiguration(restDocumentation))
+                .build();
+    };
+
+    @Nested
+    @DisplayName("주문 정보 확인")
+    class getOrderDetailById {
+
+        @Test
+        @DisplayName("성공")
+        void getOrderByIdSuccess
+                () throws Exception {
+            // given
+            final Long requestOrderId = 1L;
+            OrderAggregate returnOrder = OrderAggregate.builder()
+                    .orderId(requestOrderId)
+                    .couponId(1L)
+                    .build();
+            given(service.getOrder(requestOrderId)).willReturn(returnOrder);
+
+            // when, then
+            client.get()
+                    .uri(OPEN_API_ORDER_URI + requestOrderId)
+                    .accept(APPLICATION_JSON)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody()
+                    .jsonPath("$.orderId").isEqualTo(requestOrderId)
+                    .consumeWith(document("get-order-api"));
+        }
+
+        @Test
+        @DisplayName("실패 - 정보 없음")
+        void getOrderByIdNotFound() throws Exception {
+            // given
+            final Long requestOrderId = 1L;
+
+            given(service.getOrder(requestOrderId)).willReturn(null);
+
+            // when, then
+            client.get()
+                    .uri(OPEN_API_ORDER_URI + requestOrderId)
+                    .accept(APPLICATION_JSON)
+                    .exchange()
+                    .expectStatus().is4xxClientError()
+                    .expectBody()
+                    .jsonPath("$.code").isEqualTo(ResponseCode.NOT_FOUND.code);
+        }
+    }
+
+
+    /*@Autowired
     private WebApplicationContext context;
 
     private MockMvc mockMvc;
@@ -97,7 +113,7 @@ class OderCompositeAPITest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").value(ORDER_ID_OK))
                 .andDo(document("get-order-api"));
-    }
+    }*/
 
 //    @Test
 //    public void getOrderNotFound() {

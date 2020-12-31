@@ -1,7 +1,13 @@
+spring.data.mongodb:
+  host: localhost
+  port: 27017
+  database: coupon
+
 logging:
   level:
     root: INFO
     me.hanwool: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 
 server:
   port: 7001

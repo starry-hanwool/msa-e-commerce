@@ -6,6 +6,7 @@ import lombok.*;
 //@Value
 @Getter
 //@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 //@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderDTO {

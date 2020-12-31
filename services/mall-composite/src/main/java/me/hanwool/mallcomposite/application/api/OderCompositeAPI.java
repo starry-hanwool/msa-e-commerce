@@ -16,21 +16,29 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/open-api", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/open-api")
+//@RequestMapping(value = "/open-api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OderCompositeAPI {
 
     private final OrderCompositeServiceImpl compositeService;
 
-    @GetMapping("/order/{orderId}")
+    @GetMapping(value = "/order/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getOrder(@PathVariable Long orderId) {
 
+        log.debug("getOrder - request orderId : {}", orderId);
+
         OrderAggregate response = null;
-        try {
+//        try {
             response = compositeService.getOrder(orderId);
-        } catch (Exception e) {
-            log.debug(e.getMessage());
-            return ResponseEntity.badRequest().body(new ErrorResponse(ResponseCode.FAIL));
-        }
+
+            if (response == null) {
+                throw new NotFoundException();
+            }
+
+//        } catch (Exception e) {
+//            log.debug(e.getMessage());
+//            return ResponseEntity.badRequest().body(new ErrorResponse(ResponseCode.FAIL));
+//        }
 
         return ResponseEntity.ok().body(response);
 

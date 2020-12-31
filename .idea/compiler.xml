@@ -9,6 +9,7 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.16/6dc192c7f93ec1853f70d59d8a6dcf94eb42866/lombok-1.18.16.jar" />
         </processorPath>
         <module name="msa-e-commerce.services.mall-composite.main" />
+        <module name="msa-e-commerce.services.order-service.main" />
         <module name="msa-e-commerce.services.coupon-service.main" />
       </profile>
       <profile name="Gradle Imported" enabled="true">
@@ -16,7 +17,6 @@
         <processorPath useClasspath="false">
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.4.1.Final/a177f0daf39b807f19906fc3a7c6af8985bd8c4a/mapstruct-processor-1.4.1.Final.jar" />
         </processorPath>
-        <module name="msa-e-commerce.services.order-service.test" />
         <module name="msa-e-commerce.common.mall-util-app.test" />
       </profile>
       <profile name="Gradle Imported" enabled="true">
@@ -25,7 +25,6 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.4.1.Final/a177f0daf39b807f19906fc3a7c6af8985bd8c4a/mapstruct-processor-1.4.1.Final.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.16/6dc192c7f93ec1853f70d59d8a6dcf94eb42866/lombok-1.18.16.jar" />
         </processorPath>
-        <module name="msa-e-commerce.services.order-service.main" />
         <module name="msa-e-commerce.common.mall-util-app.main" />
       </profile>
     </annotationProcessing>
