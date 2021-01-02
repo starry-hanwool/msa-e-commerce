@@ -31,6 +31,19 @@ spring:
   config:
     activate:
       on-profile: dev
+  datasource:
+    url: jdbc:mysql://mysql/order
+    username: root
+    password: hanwool
+  hikari:
+    initializationFailTimeout: 60000
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    open-in-view: false
+    hibernate:
 
 logging:
   level:
