@@ -14,6 +14,28 @@ spring:
     hibernate:
       ddl-auto: update
 
+
+spring.cloud.stream:
+  defaultBinder: kafka
+  default.contentType: application/json
+  bindings.input:
+    destination: orders
+    group: ordersGroup
+
+spring.cloud.stream.bindings.input.consumer:
+  maxAttempts: 3
+  backOffInitialInterval: 500
+  backOffMaxInterval: 1000
+  backOffMultiplier: 2.0
+
+spring.cloud.stream.kafka.bindings.input.consumer:
+  enableDlq: true
+
+spring.cloud.stream.kafka.binder:
+  brokers: 127.0.0.1
+  defaultBrokerPort: 9092
+
+
 logging:
   level:
     root: INFO
@@ -44,6 +66,10 @@ spring:
         default_batch_fetch_size: 100
     open-in-view: false
     hibernate:
+
+
+spring.cloud.stream.kafka.binder.brokers: kafka
+
 
 logging:
   level:

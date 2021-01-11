@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderAggregate {
 
     private Long orderId;
+    private Long orderNum;
     private Long couponId;
 
 }

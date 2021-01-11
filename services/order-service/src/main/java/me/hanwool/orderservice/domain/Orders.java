@@ -19,6 +19,8 @@ public class Orders {
     @Id @GeneratedValue
     private Long orderId;
 
+    private Long orderNum;
+
     @Version
     private int version;
 

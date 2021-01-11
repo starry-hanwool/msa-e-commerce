@@ -5,43 +5,91 @@ import lombok.extern.slf4j.Slf4j;
 import me.hanwool.mallutilapp.dto.*;
 import me.hanwool.mallcomposite.core.service.OrderCompositeServiceImpl;
 import me.hanwool.mallutilapp.exception.NotFoundException;
-import me.hanwool.mallutilapp.value.ResponseCode;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/open-api")
-//@RequestMapping(value = "/open-api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OderCompositeAPI {
 
     private final OrderCompositeServiceImpl compositeService;
 
-    @GetMapping(value = "/order/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getOrder(@PathVariable Long orderId) {
+    @PostMapping(value = "/order", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+//    public ResponseEntity<OrderDTO> postOrderDetails(@RequestBody OrderAggregate body) {
+    public Mono<ResponseEntity<OrderDTO>> placeOrderComposite(@RequestBody OrderAggregate body) {
 
-        log.debug("getOrder - request orderId : {}", orderId);
+        log.debug("postOrderDetails - ");
 
-        OrderAggregate response = null;
-//        try {
-            response = compositeService.getOrder(orderId);
+        // 쿠폰 유효성 체크
+//      CouponDTO = compositeService.getCheckedCoupon();
+        // 주문 생성 요청
+//        Mono<OrderDTO> createdOrder = compositeService.placeOrder(body);
+//        Mono<OrderDTO> createdOrder = Mono.just(OrderDTO.builder().orderId(1L).build()); // test
+//        Mono<OrderDTO> createdOrder = Mono.empty();
 
-            if (response == null) {
-                throw new NotFoundException();
-            }
+//        log.debug("postOrderDetails - compositeService {}, createdOrder:{}", compositeService, createdOrder);
 
-//        } catch (Exception e) {
-//            log.debug(e.getMessage());
-//            return ResponseEntity.badRequest().body(new ErrorResponse(ResponseCode.FAIL));
+//        if (createdOrder == null) {
+//            throw new NotFoundException();
+//
 //        }
 
-        return ResponseEntity.ok().body(response);
+//        OrderDTO order = compositeService.placeOrder(body);
+//        log.debug("postOrderDetails - {}", order);
+//
+//        return ResponseEntity.ok().body(order);
 
+//        return ResponseEntity.ok().body(compositeService.placeOrder(body));
+        return compositeService.placeOrder(body).map(o -> ResponseEntity.ok(o))
+                .defaultIfEmpty(ResponseEntity.badRequest().build());
+
+//        return createdOrder.flatMap(v -> ResponseEntity.ok(createdOrder)).switchIfEmpty(v -> ResponseEntity.ok(createdOrder));
+        /*return createdOrder
+                .map(order -> {
+                    if (order == null) {
+                        return Mono.error(new NotFoundException());
+                    }
+                    return Mono.just(ResponseEntity.ok(order));
+                })
+//                .map(order -> ResponseEntity.ok(order))
+//                .cast(ResponseEntity.class)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+//                .switchIfEmpty(Mono.error(new NotFoundException()));*/
     }
 
+    @GetMapping(value = "/order/{orderId}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity getOrderDetails(@PathVariable Long orderId) {
+
+        log.debug("getOrderDetails - request orderId : {}", orderId);
+
+        OrderAggregate response = null;
+        response = compositeService.getOrderDetails(orderId);
+
+        if (response == null) {
+            throw new NotFoundException();
+        }
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    /*@GetMapping("/users/{userId}")
+    public Mono<ResponseEntity<User>> get(@PathVariable Long userId) {
+        Mono<User> userMono = userService.getById(userId); return userMono.map((user) -> { if (user.isAdult()) { return ResponseEntity.ok().header("X-User-Adult", "true").build(); } return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); }); }
+*/
+    /*@PutMapping("/tweets/{id}")
+    public Mono<ResponseEntity<Tweet>> updateTweet(@PathVariable(value = "id") String tweetId,
+                                                   @Valid @RequestBody Tweet tweet) {
+        return tweetRepository.findById(tweetId)
+                .flatMap(existingTweet -> {
+                    existingTweet.setText(tweet.getText());
+                    return tweetRepository.save(existingTweet);
+                })
+                .map(updatedTweet -> new ResponseEntity<>(updatedTweet, HttpStatus.OK))
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }*/
 }

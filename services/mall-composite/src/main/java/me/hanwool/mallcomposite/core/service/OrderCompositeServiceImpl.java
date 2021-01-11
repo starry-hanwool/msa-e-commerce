@@ -8,6 +8,7 @@ import me.hanwool.mallutilapp.dto.OrderAggregate;
 import me.hanwool.mallutilapp.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -18,20 +19,26 @@ public class OrderCompositeServiceImpl {
 
     private final OrderCompositeIntegration integration;
 
-    public OrderAggregate getOrder(Long orderId) {
+    public Mono<OrderDTO> placeOrder(OrderAggregate requestOrder) {
+//    public OrderDTO placeOrder(OrderAggregate requestOrder) {
+        log.debug("placeOrder");
 
-        log.debug("getOrder - orderId : {}", orderId);
+        return Mono.just(integration.placeOrderComposite(requestOrder));
+//        return integration.placeOrderComposite(requestOrder);
+    }
 
-        OrderDTO order = integration.getOrder(orderId);
-//        if (order == null) throw new NotFoundException("No order found for orderId: " + orderId);
+    public OrderAggregate getOrderDetails(Long orderId) {
+        log.debug("getOrderDetails - orderId : {}", orderId);
+
+        Mono<OrderDTO> order = integration.getOrder(orderId);
+//        OrderDTO order = integration.getOrder(orderId);
 
         CouponDTO coupon = null;
 
-        return createOrderAggregate(order, coupon);
+        return createOrderAggregate(order.block(), coupon);
     }
 
     private OrderAggregate createOrderAggregate(OrderDTO _order, CouponDTO _coupon) {
-
         log.debug("createOrderAggregate - orderId : {}", _order.getOrderId());
 
         Long orderId = null;
@@ -51,4 +58,5 @@ public class OrderCompositeServiceImpl {
                 .couponId(couponId)
                 .build();
     }
+
 }

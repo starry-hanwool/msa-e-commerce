@@ -1,8 +1,9 @@
 package me.hanwool.mallutilapp.port;
 
 import me.hanwool.mallutilapp.dto.*;
+import reactor.core.publisher.Mono;
 
 public interface OrderService {
 
-    OrderDTO getOrder(Long orderId);
+    Mono<OrderDTO> getOrder(Long orderId);
 }

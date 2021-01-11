@@ -37,29 +37,57 @@ MSA 이커머스 서비스 API
 | 반환 값
 |===
 
-[[hello]]
-== Hello World API
+[[post-order-v1]]
+== 주문 요청 v1
 
 === Request
 
 CURL:
 
-include::{snippets}/get-order-api/curl-request.adoc[]
+include::{snippets}/post-order/curl-request.adoc[]
 
 Request Body:
 
-include::{snippets}/get-order-api/request-body.adoc[]
+include::{snippets}/post-order/request-body.adoc[]
 
 Request HTTP Example:
 
-include::{snippets}/get-order-api/http-request.adoc[]
+include::{snippets}/post-order/http-request.adoc[]
 
 === Response
 
 Response Body:
 
-include::{snippets}/get-order-api/response-body.adoc[]
+include::{snippets}/post-order/response-body.adoc[]
 
 Response HTTP Example:
 
-include::{snippets}/get-order-api/http-response.adoc[]
+include::{snippets}/post-order/http-response.adoc[]
+
+
+[[get-order-v1]]
+== 주문 조회 v1
+
+=== Request
+
+CURL:
+
+include::{snippets}/get-order/curl-request.adoc[]
+
+Request Body:
+
+include::{snippets}/get-order/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/get-order/http-request.adoc[]
+
+=== Response
+
+Response Body:
+
+include::{snippets}/get-order/response-body.adoc[]
+
+Response HTTP Example:
+
+include::{snippets}/get-order/http-response.adoc[]

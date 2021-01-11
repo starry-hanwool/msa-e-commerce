@@ -16,6 +16,23 @@ app:
         host: localhost
         port: 7002
 
+spring.cloud.stream:
+    defaultBinder: kafka
+    default.contentType: application/json
+    bindings:
+        output-orders:
+            destination: orders
+            producer:
+                required-groups: auditGroup
+        output-coupons:
+            destination: coupons
+            producer:
+                required-groups: auditGroup
+
+spring.cloud.stream.kafka.binder:
+    brokers: 127.0.0.1
+    defaultBrokerPort: 9092
+
 ---
 spring:
     config:
@@ -38,6 +55,16 @@ app:
     order-service:
         host: order
         port: 8080
+
+spring.cloud.stream.kafka.binder.brokers: kafka
+
+#spring.cloud.stream.bindings.output-orders.producer:
+#    partition-key-expression: payload.key
+#    partition-count: 2
+#
+#spring.cloud.stream.bindings.output-coupons.producer:
+#    partition-key-expression: payload.key
+#    partition-count: 2
 
 ---
 spring:

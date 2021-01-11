@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootTest
-@ComponentScan("me.hanwool")
+//@ComponentScan("me.hanwool")
 class MallCompositeApplicationTests {
 
 	@Test

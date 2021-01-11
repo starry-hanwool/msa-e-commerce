@@ -19,6 +19,11 @@ public class OrderAPI {
 
     private final OrderServiceImpl orderService;
 
+//    @PostMapping(value = "/{orderId}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+//    public ResponseEntity placeOrder() {
+//
+//    }
+
     @GetMapping(value = "/{orderId}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity getOrder(@PathVariable Long orderId) {
 
