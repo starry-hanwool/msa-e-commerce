@@ -1,16 +1,30 @@
 package me.hanwool.orderservice.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import lombok.*;
+
+import javax.persistence.*;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class OrderLine {
 
     @Id @GeneratedValue
     private Long orderLineId;
 
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orderId")
+    private Orders orders;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "productId")
+//    private Product product;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "productId")
+    private Item item;
 
     private int quantity;
 

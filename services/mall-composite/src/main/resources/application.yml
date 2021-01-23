@@ -2,6 +2,12 @@ logging:
     level:
         root: INFO
         me.hanwool: DEBUG
+        org.apache:
+            kafka: WARN
+            kafka.clients: WARN
+        org.springframework:
+            kafka:
+                requestreply: DEBUG
 
 server:
     port: 7000
@@ -16,28 +22,65 @@ app:
         host: localhost
         port: 7002
 
-spring.cloud.stream:
-    defaultBinder: kafka
-    default.contentType: application/json
-    bindings:
-        output-orders:
-            destination: orders
-            producer:
-                required-groups: auditGroup
-        output-coupons:
-            destination: coupons
-            producer:
-                required-groups: auditGroup
+#spring.cloud.stream:
+#    defaultBinder: kafka
+#    default.contentType: application/json
 
-spring.cloud.stream.kafka.binder:
-    brokers: 127.0.0.1
-    defaultBrokerPort: 9092
+#    bindings:
+#        input-composite:
+#            destination: composite
+#            group: compositeGroup
+#        output-orders:
+#            destination: orders
+
+#            producer:
+#                required-groups: auditGroup
+#        output-coupons:
+#            destination: coupons
+#            producer:
+#                required-groups: auditGroup
+
+#spring.cloud.stream.kafka.binder:
+#    brokers: 127.0.0.1
+#    defaultBrokerPort: 9092
+#    replication-factor: 1 # Creating topics with default partitions/replication factor are only supported in CreateTopicRequest version 4+
+
+
+
+#spring.kafka:
+#    producer:
+#        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    consumer:
+#        value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#        enable-auto-commit: false
+#        auto-offset-reset: earliest
+#        properties:
+#            spring.json.trusted.packages: me.hanwool
+
+spring:
+    kafka:
+        template:
+            default-topic: composite
+        consumer:
+            group-id: compsiteGroup
+#            group-id: auditGroup
+#            properties:
+#                spring.json.trusted.packages: (*)
+#                spring.json.trusted.packages: me.hanwool.mallutilapp.event.Event
+        bootstrap-servers: localhost:9092
+        client-id: 1
+
+## custom
+kafka.output.orders.topic: orders
+#kafka.output.coupon.topic: coupons
+kafka.input.topic: composite
+kafka.consumer.group.id: compsiteGroup
 
 ---
 spring:
-    config:
-        activate:
-            on-profile: dev
+    profiles: dev
+    kafka:
+        bootstrap-servers: kafka:9092
 logging:
     level:
         root: INFO
@@ -56,7 +99,8 @@ app:
         host: order
         port: 8080
 
-spring.cloud.stream.kafka.binder.brokers: kafka
+#spring.cloud.stream.kafka.binder.brokers: kafka
+
 
 #spring.cloud.stream.bindings.output-orders.producer:
 #    partition-key-expression: payload.key
@@ -68,9 +112,14 @@ spring.cloud.stream.kafka.binder.brokers: kafka
 
 ---
 spring:
-    config:
-        activate:
-            on-profile: stage
+    profiles: stage
+
+server:
+    port: 8080
+
+---
+spring:
+    profiles: prod
 
 logging:
     level:
@@ -82,32 +131,3 @@ server:
     error:
         include-message: never
 
-app:
-    coupon-service:
-        host: coupon
-        port: 8080
-    order-service:
-        host: order
-        port: 8080
-
----
-spring:
-    config:
-        activate:
-            on-profile: prod
-
-logging:
-    level:
-        root: INFO
-        me.hanwool: INFO
-
-server:
-    port: 8080
-
-app:
-    coupon-service:
-        host: coupon
-        port: 8080
-    order-service:
-        host: order
-        port: 8080

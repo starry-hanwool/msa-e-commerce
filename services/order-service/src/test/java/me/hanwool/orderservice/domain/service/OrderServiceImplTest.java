@@ -33,6 +33,17 @@ class OrderServiceImplTest {
     }
 
     @Nested
+    @DisplayName("주문 생성")
+    class createOrder {
+
+        @Test
+        @DisplayName("성공")
+        void createOrderSuccess() {
+
+        }
+    }
+
+    @Nested
     @DisplayName("주문 조회")
     class getOrder {
 
@@ -40,17 +51,25 @@ class OrderServiceImplTest {
         @DisplayName("성공")
         void getOrderSuccess() {
             // given
-            final Long requestOrderId = 1L;
-            Optional<Orders> order = Optional.of(Orders.builder()
-                    .orderId(requestOrderId)
-                    .build());
-            given(repository.findById(requestOrderId)).willReturn(order);
+            final Long requestOrderNum = 2021011211L;
+/*            Optional<Orders> order = Optional.of(Orders.builder()
+//                    .orderId(requestOrderId)
+                    .orderNum(requestOrderNum)
+                    .build());*/
+            Orders order = Orders.builder()
+//                    .orderId(requestOrderId)
+                    .orderNum(requestOrderNum)
+                    .build();
+            given(repository.findByOrderNum(requestOrderNum)).willReturn(order);
+//            given(repository.findById(requestOrderId)).willReturn(order);
 
             // when
-            Orders returnedOrder = service.getOrder(requestOrderId);
+            Orders returnedOrder = service.getOrder(requestOrderNum);
+//            Orders returnedOrder = service.getOrder(requestOrderId);
 
             // then
-            assertEquals(requestOrderId, returnedOrder.getOrderId());
+            assertEquals(requestOrderNum, returnedOrder.getOrderNum());
+//            assertEquals(requestOrderId, returnedOrder.getOrderId());
         }
 
     }

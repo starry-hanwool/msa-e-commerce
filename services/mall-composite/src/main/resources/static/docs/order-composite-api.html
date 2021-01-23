@@ -535,7 +535,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/open-api/order/' -i -X POST \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json' \
-    -d '{"orderId":null,"orderNum":null,"couponId":null}'</code></pre>
+    -d '{"orderId":null,"orderNum":null,"orderLineList":null,"couponId":null,"status":null}'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -543,7 +543,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>{"orderId":null,"orderNum":null,"couponId":null}</code></pre>
+<pre class="highlightjs highlight nowrap"><code>{"orderId":null,"orderNum":null,"orderLineList":null,"couponId":null,"status":null}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -554,10 +554,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /open-api/order/ HTTP/1.1
 Accept: application/json
 Content-Type: application/json
-Content-Length: 48
+Content-Length: 83
 Host: localhost:8080
 
-{"orderId":null,"orderNum":null,"couponId":null}</code></pre>
+{"orderId":null,"orderNum":null,"orderLineList":null,"couponId":null,"status":null}</code></pre>
 </div>
 </div>
 </div>
@@ -568,7 +568,7 @@ Host: localhost:8080
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>{"orderId":null,"orderNum":202101101111,"productId":null}</code></pre>
+<pre class="highlightjs highlight nowrap"><code>{"orderId":null,"orderNum":202101101111,"orderLineList":null,"couponId":null,"status":null}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -578,9 +578,9 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 57
+Content-Length: 91
 
-{"orderId":null,"orderNum":202101101111,"productId":null}</code></pre>
+{"orderId":null,"orderNum":202101101111,"orderLineList":null,"couponId":null,"status":null}</code></pre>
 </div>
 </div>
 </div>
@@ -596,7 +596,7 @@ Content-Length: 57
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/open-api/order/1' -i -X GET \
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ curl 'http://localhost:8080/open-api/order/20210118' -i -X GET \
     -H 'Accept: application/json'</code></pre>
 </div>
 </div>
@@ -613,7 +613,7 @@ Content-Length: 57
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /open-api/order/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /open-api/order/20210118 HTTP/1.1
 Accept: application/json
 Host: localhost:8080</code></pre>
 </div>
@@ -626,7 +626,7 @@ Host: localhost:8080</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code>{"orderId":1,"orderNum":null,"couponId":1}</code></pre>
+<pre class="highlightjs highlight nowrap"><code>{"orderId":null,"orderNum":20210118,"orderLineList":null,"couponId":1,"status":null}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -636,9 +636,9 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 42
+Content-Length: 84
 
-{"orderId":1,"orderNum":null,"couponId":1}</code></pre>
+{"orderId":null,"orderNum":20210118,"orderLineList":null,"couponId":1,"status":null}</code></pre>
 </div>
 </div>
 </div>

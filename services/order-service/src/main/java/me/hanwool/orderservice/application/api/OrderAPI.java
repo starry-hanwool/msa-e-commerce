@@ -19,24 +19,42 @@ public class OrderAPI {
 
     private final OrderServiceImpl orderService;
 
-//    @PostMapping(value = "/{orderId}", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-//    public ResponseEntity placeOrder() {
-//
-//    }
+/*    @PostMapping(value = "/", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    public ResponseEntity placeOrder(@RequestBody OrderDTO orderAggregate) {
+//    public ResponseEntity placeOrder(@RequestBody OrderAggregate orderAggregate) {
 
-    @GetMapping(value = "/{orderId}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity getOrder(@PathVariable Long orderId) {
+//        OrderAggregate response = null;
+//        OrderDTO response = null;
 
-        log.debug("getOrder - orderId :{}", orderId);
+//        Orders requestOrder = Orders.builder()
+//                .orderNum(orderAggregate.getOrderNum())
+//                .build();
+
+        // 가주문 생성
+        OrderDTO response = orderService.createOrder(orderAggregate);
+//        Orders result = orderService.createOrder(requestOrder);
+
+//        response = OrderAggregate.builder()
+//                .orderNum(result.getOrderNum())
+//                .build();
+
+        return ResponseEntity.ok().body(response);
+    }*/
+
+    @GetMapping(value = "/{orderNum}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity getOrder(@PathVariable Long orderNum) {
+
+        log.debug("getOrder - orderNum :{}", orderNum);
         OrderDTO response = null;
 
-        Orders orders = orderService.getOrder(orderId);
+        Orders orders = orderService.getOrder(orderNum);
         if(orders == null) {
             throw new NotFoundException();
         }
 
         response = OrderDTO.builder()
                 .orderId(orders.getOrderId())
+                .orderNum(orders.getOrderNum())
                 .build();
 
         return ResponseEntity.ok().body(response);

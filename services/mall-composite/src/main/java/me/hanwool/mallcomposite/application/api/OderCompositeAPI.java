@@ -19,9 +19,9 @@ public class OderCompositeAPI {
 
     private final OrderCompositeServiceImpl compositeService;
 
+    // 주문요청
     @PostMapping(value = "/order", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-//    public ResponseEntity<OrderDTO> postOrderDetails(@RequestBody OrderAggregate body) {
-    public Mono<ResponseEntity<OrderDTO>> placeOrderComposite(@RequestBody OrderAggregate body) {
+    public Mono<ResponseEntity<OrderDTO>> placeOrderComposite(@RequestBody OrderDTO body) throws Exception {
 
         log.debug("postOrderDetails - ");
 
@@ -36,7 +36,6 @@ public class OderCompositeAPI {
 
 //        if (createdOrder == null) {
 //            throw new NotFoundException();
-//
 //        }
 
 //        OrderDTO order = compositeService.placeOrder(body);
@@ -62,13 +61,13 @@ public class OderCompositeAPI {
 //                .switchIfEmpty(Mono.error(new NotFoundException()));*/
     }
 
-    @GetMapping(value = "/order/{orderId}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity getOrderDetails(@PathVariable Long orderId) {
+    @GetMapping(value = "/order/{orderNum}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity getOrderDetails(@PathVariable Long orderNum) {
 
-        log.debug("getOrderDetails - request orderId : {}", orderId);
+        log.debug("getOrderDetails - request orderNum : {}", orderNum);
 
-        OrderAggregate response = null;
-        response = compositeService.getOrderDetails(orderId);
+        OrderDTO response = null;
+        response = compositeService.getOrderDetails(orderNum);
 
         if (response == null) {
             throw new NotFoundException();

@@ -1,8 +1,11 @@
 package me.hanwool.mallutilapp.dto;
 
-import lombok.Getter;
+import lombok.*;
 
+@Builder
 @Getter
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@AllArgsConstructor
 public class CouponDTO {
 
     private final Long couponId;

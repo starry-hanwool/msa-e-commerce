@@ -18,9 +18,8 @@ server:
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: dev
+  profiles: dev
+
   data:
     mongodb:
       host: mongodb
@@ -39,23 +38,14 @@ server:
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: stage
-
-logging:
-  level:
-    root: INFO
-    me.hanwool: INFO
+  profiles: stage
 
 server:
   port: 8080
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: prod
+  profiles: prod
 
 logging:
   level:

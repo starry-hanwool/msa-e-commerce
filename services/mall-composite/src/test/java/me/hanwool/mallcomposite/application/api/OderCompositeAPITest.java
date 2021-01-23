@@ -2,7 +2,6 @@ package me.hanwool.mallcomposite.application.api;
 
 import me.hanwool.mallcomposite.core.service.OrderCompositeIntegration;
 import me.hanwool.mallcomposite.core.service.OrderCompositeServiceImpl;
-import me.hanwool.mallutilapp.dto.OrderAggregate;
 import me.hanwool.mallutilapp.dto.OrderDTO;
 import me.hanwool.mallutilapp.value.ResponseCode;
 import org.junit.jupiter.api.*;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.annotation.DirtiesContext;
@@ -25,6 +25,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @WebFluxTest(OderCompositeAPI.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -67,9 +68,9 @@ class OderCompositeAPITest {
 //            final Long createdOrderId = 1L;
             final Long createdOrderNum = 202101101111L;
 
-            OrderAggregate requestOrder = OrderAggregate.builder()
+            OrderDTO requestOrder = OrderDTO.builder()
                     .build();
-//            OrderAggregate requestOrder = mock(OrderAggregate.class);
+//            OrderDTO requestOrder = mock(OrderDTO.class);
 
             OrderDTO returnOrder = OrderDTO.builder()
                     .orderNum(202101101111L)
@@ -80,15 +81,15 @@ class OderCompositeAPITest {
 //            doReturn(returnOrder).when(requestOrderSpy);
 
 //            given(service.placeOrder(requestOrder)).willReturn(Mono.just(returnOrder));
-            given(service.placeOrder(any(OrderAggregate.class))).willReturn(Mono.just(returnOrder));
-//            given(service.placeOrder(any(OrderAggregate.class))).willReturn(returnOrder);
+            given(service.placeOrder(any(OrderDTO.class))).willReturn(Mono.just(returnOrder));
+//            given(service.placeOrder(any(OrderDTO.class))).willReturn(returnOrder);
 
             // API 요청 성공하면
             client.post()
                     .uri(OPEN_API_ORDER_URI)
                     .accept(APPLICATION_JSON)
                     .contentType(APPLICATION_JSON)
-                    .body(Mono.just(requestOrder), OrderAggregate.class)
+                    .body(Mono.just(requestOrder), OrderDTO.class)
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
@@ -107,21 +108,24 @@ class OderCompositeAPITest {
         @DisplayName("성공")
         void getOrderDetailsByIdSuccess() throws Exception {
             // given
-            final Long requestOrderId = 1L;
-            OrderAggregate returnOrder = OrderAggregate.builder()
-                    .orderId(requestOrderId)
+            final Long requestOrderNum = 20210118L;
+//            final Long requestOrderId = 1L;
+            OrderDTO returnOrder = OrderDTO.builder()
+                    .orderNum(requestOrderNum)
+//                    .orderId(requestOrderId)
                     .couponId(1L)
                     .build();
-            given(service.getOrderDetails(requestOrderId)).willReturn(returnOrder);
+            given(service.getOrderDetails(requestOrderNum)).willReturn(returnOrder);
 
             // when, then
             client.get()
-                    .uri(OPEN_API_ORDER_URI + requestOrderId)
+                    .uri(OPEN_API_ORDER_URI + requestOrderNum)
                     .accept(APPLICATION_JSON)
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
-                    .jsonPath("$.orderId").isEqualTo(requestOrderId)
+                    .jsonPath("$.orderNum").isEqualTo(requestOrderNum)
+//                    .jsonPath("$.orderId").isEqualTo(requestOrderNum)
                     .consumeWith(document("get-order"));
         }
 
@@ -144,25 +148,13 @@ class OderCompositeAPITest {
         }
     }
 
-    /*@Autowired
-    private WebApplicationContext context;
-
-    private MockMvc mockMvc;
-
-    @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentation)).build();
+    private WebTestClient.BodyContentSpec getExpectedBody(String idPath, HttpStatus expectedStatus) {
+        return client.get()
+                .uri(OPEN_API_ORDER_URI + idPath)
+                .accept(APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isEqualTo(expectedStatus)
+                .expectBody();
     }
-
-    @Test
-    @DisplayName("주문 정보 확인")
-    void getOrderById() throws Exception {
-        this.mockMvc.perform(get("/open-api/order/" + ORDER_ID_OK)
-                .contentType(APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderId").value(ORDER_ID_OK))
-                .andDo(document("get-order-api"));
-    }*/
 
 }

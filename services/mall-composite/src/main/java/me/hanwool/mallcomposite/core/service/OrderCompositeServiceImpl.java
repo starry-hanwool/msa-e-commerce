@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.hanwool.mallutilapp.dto.*;
 
-import me.hanwool.mallutilapp.dto.OrderAggregate;
-import me.hanwool.mallutilapp.exception.NotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
@@ -19,27 +16,28 @@ public class OrderCompositeServiceImpl {
 
     private final OrderCompositeIntegration integration;
 
-    public Mono<OrderDTO> placeOrder(OrderAggregate requestOrder) {
-//    public OrderDTO placeOrder(OrderAggregate requestOrder) {
+    public Mono<OrderDTO> placeOrder(OrderDTO requestOrder) throws Exception {
+//    public Mono<OrderDTO> placeOrder(OrderDTO requestOrder) {
+//    public OrderDTO placeOrder(OrderDTO requestOrder) {
         log.debug("placeOrder");
 
         return Mono.just(integration.placeOrderComposite(requestOrder));
 //        return integration.placeOrderComposite(requestOrder);
     }
 
-    public OrderAggregate getOrderDetails(Long orderId) {
-        log.debug("getOrderDetails - orderId : {}", orderId);
+    public OrderDTO getOrderDetails(Long orderNum) {
+        log.debug("getOrderDetails - orderNum : {}", orderNum);
 
-        Mono<OrderDTO> order = integration.getOrder(orderId);
+        Mono<OrderDTO> order = integration.getOrder(orderNum);
 //        OrderDTO order = integration.getOrder(orderId);
 
         CouponDTO coupon = null;
 
-        return createOrderAggregate(order.block(), coupon);
+        return createOrderDTO(order.block(), coupon);
     }
 
-    private OrderAggregate createOrderAggregate(OrderDTO _order, CouponDTO _coupon) {
-        log.debug("createOrderAggregate - orderId : {}", _order.getOrderId());
+    private OrderDTO createOrderDTO(OrderDTO _order, CouponDTO _coupon) {
+        log.debug("createOrderDTO - orderId : {}", _order.getOrderId());
 
         Long orderId = null;
         Long couponId = null;
@@ -53,7 +51,7 @@ public class OrderCompositeServiceImpl {
             couponId = coupon.get().getCouponId();
         }
 
-        return OrderAggregate.builder()
+        return OrderDTO.builder()
                 .orderId(orderId)
                 .couponId(couponId)
                 .build();

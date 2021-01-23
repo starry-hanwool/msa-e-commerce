@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost/order
+    url: jdbc:mysql://localhost/order?characterEncoding=UTF-8&serverTimezone=UTC&autoReconnection=true
     username: root
     password: hanwool
   hikari:
@@ -13,33 +13,56 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+  kafka:
+    template:
+      default-topic: orders
+    consumer:
+      group-id: orderGroup
+#      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: me.hanwool.mallutilapp.*
+    producer:
+#      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+    bootstrap-servers: localhost:9092
+    client-id: 1
 
-
-spring.cloud.stream:
-  defaultBinder: kafka
-  default.contentType: application/json
-  bindings.input:
-    destination: orders
-    group: ordersGroup
-
-spring.cloud.stream.bindings.input.consumer:
-  maxAttempts: 3
-  backOffInitialInterval: 500
-  backOffMaxInterval: 1000
-  backOffMultiplier: 2.0
-
-spring.cloud.stream.kafka.bindings.input.consumer:
-  enableDlq: true
-
-spring.cloud.stream.kafka.binder:
-  brokers: 127.0.0.1
-  defaultBrokerPort: 9092
-
+#spring.cloud.stream:
+#  defaultBinder: kafka
+#  default.contentType: application/json
+#  bindings:
+#    input:
+#      destination: orders
+#      group: ordersGroup
+#      durableSubscription: true
+#    output-composite:
+#      destination: composite
+##      producer:
+##        required-groups: auditGroup
+#
+#spring.cloud.stream.bindings.input.consumer:
+#  maxAttempts: 3
+#  backOffInitialInterval: 500
+#  backOffMaxInterval: 1000
+#  backOffMultiplier: 2.0
+#
+#spring.cloud.stream.kafka.bindings.input.consumer:
+#  enableDlq: true
+#
+#spring.cloud.stream.kafka.binder:
+#  brokers: 127.0.0.1
+#  defaultBrokerPort: 9092
 
 logging:
   level:
     root: INFO
     me.hanwool: DEBUG
+    org.apache.kafka: WARN
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
@@ -48,13 +71,19 @@ server:
   error:
     include-message: always
 
+
+
+## custom
+kafka.output.composite.topic: composite
+#kafka.output.coupon.topic: coupons
+kafka.input.topic: orders
+kafka.consumer.group.id: orderGroup
+
 ---
 spring:
-  config:
-    activate:
-      on-profile: dev
+  profiles: dev
   datasource:
-    url: jdbc:mysql://mysql/order
+    url: jdbc:mysql://mysql/order?characterEncoding=UTF-8&serverTimezone=UTC&autoReconnection=true
     username: root
     password: hanwool
   hikari:
@@ -65,25 +94,29 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     open-in-view: false
-    hibernate:
+  kafka:
+    bootstrap-servers: kafka:9092
 
-
-spring.cloud.stream.kafka.binder.brokers: kafka
-
-
-logging:
-  level:
-    root: INFO
-    me.hanwool: DEBUG
+#spring.cloud.stream.kafka.binder.brokers: kafka
 
 server:
   port: 8080
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: stage
+  profiles: stage
+
+server:
+  port: 8080
+
+
+---
+spring:
+  profiles: prod
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
 logging:
   level:
@@ -94,17 +127,3 @@ server:
   port: 8080
   error:
     include-message: never
-
----
-spring:
-  config:
-    activate:
-      on-profile: prod
-
-logging:
-  level:
-    root: INFO
-    me.hanwool: INFO
-
-server:
-  port: 8080

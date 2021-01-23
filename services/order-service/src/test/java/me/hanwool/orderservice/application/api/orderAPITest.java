@@ -1,46 +1,35 @@
 package me.hanwool.orderservice.application.api;
 
-import me.hanwool.mallutilapp.handler.APIExceptionHandler;
-import me.hanwool.mallutilapp.value.ResponseCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import me.hanwool.mallutilapp.dto.OrderDTO;
 import me.hanwool.orderservice.domain.Orders;
+import me.hanwool.orderservice.domain.repository.OrderRepository;
 import me.hanwool.orderservice.domain.service.OrderServiceImpl;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@Transactional
-//@SpringBootTest
-//@AutoConfigureWebTestClient
-//@AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(OrderAPI.class)
-//@ExtendWith(MockitoExtension.class)
+@ActiveProfiles("logging-test")
 @DisplayName("주문 API TEST")
 class orderAPITest {
 
@@ -48,15 +37,18 @@ class orderAPITest {
 
     @Autowired
     private MockMvc mockMvc;
-//    private WebTestClient client;
 
 //    @InjectMocks
 //    private OrderAPI orderAPI;
 
     @MockBean
-//    @Autowired
-//    @Mock
+    private OrderRepository repository;
+
+    @MockBean
     private OrderServiceImpl service;
+
+    @Autowired
+    private ObjectMapper mapper;
 
     /*@BeforeEach
     public void setup() {
@@ -71,6 +63,34 @@ class orderAPITest {
                 .build();
     }*/
 
+/*    @Nested
+    @DisplayName("주문 요청")
+    class placeOrder {
+
+        @Test
+        @DisplayName("가주문 생성 성공")
+        void placeOrderSuccess() throws Exception {
+            // given
+            final Long requestOrderNum = 20210112L;
+
+            final OrderDTO requestOrderAgg = OrderDTO.builder()
+//            final OrderAggregate requestOrderAgg = OrderAggregate.builder()
+                    .orderNum(requestOrderNum)
+                    .build();
+
+//            final Orders requestOrder = Orders.builder()
+//                    .orderNum(requestOrderNum)
+//                    .build();
+
+            given(service.createOrder(requestOrderAgg)).willReturn(requestOrderAgg);
+//            given(service.createOrder(requestOrder)).willReturn(requestOrder);
+
+            postExpectedBody(requestOrderAgg, HttpStatus.OK)
+                    .andExpect(jsonPath("$.orderNum").value(requestOrderNum));
+
+        }
+    }*/
+
     @Nested
     @DisplayName("주문 정보 조회")
     class getOrderById {
@@ -79,22 +99,19 @@ class orderAPITest {
         @DisplayName("성공")
         void getOrderByIdSuccess() throws Exception {
             // given
-            final Long requestOrderId = 1L;
+            final Long requestOrderNum = 20120112111L;
+//            final Long requestOrderId = 1L;
             final Orders orders = Orders.builder()
-                    .orderId(requestOrderId)
+//                    .orderId(requestOrderId)
+                    .orderNum(requestOrderNum)
                     .build();
-            given(service.getOrder(requestOrderId)).willReturn(orders);
+            given(service.getOrder(requestOrderNum)).willReturn(orders);
 
             // when, then
-            /*mockMvc.perform(get(ORDER_API_URI + requestOrderId)
-                    .accept(APPLICATION_JSON_VALUE))
-//                .contentType(APPLICATION_JSON_VALUE))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.orderId").value(requestOrderId));*/
-
-            getExpectedBody(String.valueOf(requestOrderId), HttpStatus.OK)
+            getExpectedBody(String.valueOf(requestOrderNum), HttpStatus.OK)
+//            getExpectedBody(String.valueOf(requestOrderId), HttpStatus.OK)
 //                    .jsonPath("$.orderId").isEqualTo(requestOrderId);
-                    .andExpect(jsonPath("$.orderId").value(requestOrderId));
+                    .andExpect(jsonPath("$.orderNum").value(requestOrderNum));
         }
 
         @Test
@@ -114,20 +131,21 @@ class orderAPITest {
 
     //
 
-    private ResultActions getExpectedBody(String productIdPath, HttpStatus expectedStatus) throws Exception {
-//    private WebTestClient.BodyContentSpec getExpectedBody(String productIdPath, HttpStatus expectedStatus) {
+    private ResultActions postExpectedBody(OrderDTO orderAggregate, HttpStatus expectedStatus) throws Exception {
+//    private ResultActions postExpectedBody(OrderAggregate orderAggregate, HttpStatus expectedStatus) throws Exception {
+        String content = mapper.writeValueAsString(orderAggregate);
 
+        return mockMvc.perform(post(ORDER_API_URI)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(content))
+                .andExpect(status().is(expectedStatus.value()));
+    }
+
+    private ResultActions getExpectedBody(String productIdPath, HttpStatus expectedStatus) throws Exception {
         return mockMvc.perform(get(ORDER_API_URI + productIdPath)
                 .accept(APPLICATION_JSON_VALUE))
-//                .contentType(APPLICATION_JSON_VALUE))
                 .andExpect(status().is(expectedStatus.value()));
-//                .andExpect(jsonPath("$.orderId").value(ORDER_ID_OK))
-//        return client.get()
-//                .uri(ORDER_API_URI + productIdPath)
-//                .accept(APPLICATION_JSON)
-//                .exchange()
-//                .expectStatus().isEqualTo(expectedStatus)
-//                .expectBody();
     }
 
 }

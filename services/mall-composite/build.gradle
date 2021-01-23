@@ -17,8 +17,7 @@ configurations {
 
 repositories {
 	mavenCentral()
-//	maven { url 'https://repo.spring.io/milestone' }
-//	maven { url 'https://repo.spring.io/snapshot' }
+//	maven { url 'https://packages.confluent.io/maven/' }
 }
 
 ext {
@@ -32,6 +31,7 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-stream'
 	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
 	implementation 'org.springframework.kafka:spring-kafka'
+//	implementation 'io.confluent:kafka-avro-serializer:6.0.1'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -88,5 +88,6 @@ task copyDocument(type: Copy) {
 
 build {
 	dependsOn copyDocument
-	test.exclude("me/hanwool/mallcomposite/application/api/**Integration")
+	test.exclude("me/hanwool/mallcomposite/integration/**")
+//	test.exclude("me/hanwool/mallcomposite/application/api/**Integration")
 }
