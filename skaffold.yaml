@@ -1,0 +1,27 @@
+apiVersion: skaffold/v2beta10
+kind: Config
+metadata:
+  name: msa-e-commerce
+build:
+  artifacts:
+#  - image: coupon
+#    context: services\coupon-service
+#    docker: {}
+  - image: mall-composite
+    context: services\mall-composite
+    docker: {}
+  - image: order
+    context: services\order-service
+    docker: {}
+deploy:
+  kubectl:
+    manifests:
+#    - kubernetes-manifests/coupon-service.yaml
+    - kubernetes-manifests/mall-composite.yaml
+    - kubernetes-manifests/order-service.yaml
+    - kubernetes-manifests/order-secret.yaml
+    - kubernetes-manifests/order-secret-sql.yaml
+    - kubernetes-manifests/order-configmap.yaml
+    - kubernetes-manifests/composite-ingress.yaml
+#    - kubernetes-manifests/nginx-ingress-controller.yaml # test
+

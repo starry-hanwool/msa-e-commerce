@@ -53,6 +53,9 @@ public class OrderCompositeIntegration implements CouponService, OrderService {
     private final String couponServiceUrl;
     private final String orderServiceUrl;
 
+//    private final String orderServiceUrl = "http://order-service/api/order/";
+//    private final String couponServiceUrl = "http://coupon/api/coupon/";
+
     @Value("${kafka.output.orders.topic}")
     private String OUTPUT_ORDERS;
 
@@ -62,11 +65,13 @@ public class OrderCompositeIntegration implements CouponService, OrderService {
     public OrderCompositeIntegration(RestTemplate restTemplate,
                                      WebClient.Builder webClientBuilder,
                                      ObjectMapper mapper,
-                                     ReplyingKafkaTemplate<Long, Event, Event> replyingKafkaTemplate,
+                                     ReplyingKafkaTemplate<Long, Event, Event> replyingKafkaTemplate
+            ,
                                      @Value("${app.coupon-service.host}") String couponServiceHost,
                                      @Value("${app.coupon-service.port}") int couponServicePort,
                                      @Value("${app.order-service.host}") String orderServiceHost,
-                                     @Value("${app.order-service.port}") int orderServicePort) {
+                                     @Value("${app.order-service.port}") int orderServicePort
+                                     ) {
         this.webClient = webClientBuilder.build();
         this.mapper = mapper;
         this.replyingKafkaTemplate = replyingKafkaTemplate;

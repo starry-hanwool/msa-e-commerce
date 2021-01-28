@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: composite-ingress
+  namespace: order-space
+  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: nginx
+spec:
+#  defaultBackend:
+#    service:
+#      name: mall-composite
+#      port:
+#        number: 80
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mall-composite
+                port:
+                  number: 80

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost/order?characterEncoding=UTF-8&serverTimezone=UTC&autoReconnection=true
+    url: jdbc:mysql://localhost/orders?characterEncoding=UTF-8&serverTimezone=UTC&autoReconnection=true
     username: root
     password: hanwool
   hikari:
@@ -30,7 +30,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       key-serializer: org.apache.kafka.common.serialization.LongSerializer
     bootstrap-servers: localhost:9092
-    client-id: 1
+#    client-id: 1
 
 #spring.cloud.stream:
 #  defaultBinder: kafka
@@ -65,7 +65,12 @@ logging:
     org.apache.kafka: WARN
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-
+#    com:
+#      mysql:
+#        cj:
+#          jdbc: DEBUG
+#      zaxxer:
+#        hikari: DEBUG
 server:
   port: 7002
   error:
@@ -83,7 +88,7 @@ kafka.consumer.group.id: orderGroup
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://mysql/order?characterEncoding=UTF-8&serverTimezone=UTC&autoReconnection=true
+    url: jdbc:mysql://mysql/orders?characterEncoding=UTF-8&serverTimezone=UTC&autoReconnection=true
     username: root
     password: hanwool
   hikari:
@@ -95,7 +100,7 @@ spring:
         default_batch_fetch_size: 100
     open-in-view: false
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: kafka:9092 # docker-compose 용
 
 #spring.cloud.stream.kafka.binder.brokers: kafka
 
@@ -105,9 +110,20 @@ server:
 ---
 spring:
   profiles: stage
+  datasource:
+#    username: root
+#    url: jdbc:mysql://mysql-0.order-space.svc.cluster.local:3306/orders?characterEncoding=UTF-8&serverTimezone=UTC&autoReconnection=true
+#    url: jdbc:mysql://mysql-0.mysql.order-space.svc.cluster.local:3306/orders?characterEncoding=UTF-8&serverTimezone=UTC&autoReconnection=true
+#    password: Bq2y1SaayU
+#    platform: mysql
+    url: jdbc:mysql://${DB_HOST}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  kafka:
+    bootstrap-servers: kafka-0.kafka-headless.kafka.svc.cluster.local:9092
 
 server:
-  port: 8080
+  port: 8077
 
 
 ---
@@ -124,6 +140,6 @@ logging:
     me.hanwool: INFO
 
 server:
-  port: 8080
+  port: 8087
   error:
     include-message: never

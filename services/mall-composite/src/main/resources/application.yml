@@ -13,6 +13,8 @@ server:
     port: 7000
     error:
         include-message: always
+    servlet:
+        context-path: /
 
 app:
     coupon-service:
@@ -113,9 +115,20 @@ app:
 ---
 spring:
     profiles: stage
+    kafka:
+        bootstrap-servers: kafka-0.kafka-headless.kafka.svc.cluster.local:9092
+
+app:
+    coupon-service:
+        host: coupon
+        port: 8080
+    order-service:
+        host: order
+        port: 8087
 
 server:
-    port: 8080
+#    port: 80
+    port: 8088
 
 ---
 spring:

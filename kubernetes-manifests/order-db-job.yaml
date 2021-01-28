@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: order-db-job
+  namespace: order-space
+spec:
+  parallelism: 1
+  completions: 1
+  template:
+    metadata:
+      name: order-db-job
+    spec:
+      volumes:
+        - name: order-db-job-volume
+#          configMap:
+#            name: hello-world-scripts
+          secret:
+            secretName: order-secret-sql
+      containers:
+        - name: order-db-job
+          image: alpine
+          volumeMounts:
+            - mountPath: /order-secret-sql
+              name: order-db-job-volume
+          env:
+            - name: HOME
+              value: /tmp
+          command: [ "sh", "-c", "/order-secret-sql/initdb.sql" ]
+#          command:
+#            - /bin/sh
+#            - -c
+#            - |
+#              echo "scripts in /order-secret-sql"
+#              ls -lh /order-secret-sql
+#              echo "copy scripts to /tmp"
+#              cp /hello-world-scripts/*.sh /tmp
+#              echo "apply 'chmod +x' to /tmp/*.sh"
+#              chmod +x /tmp/*.sh
+#              echo "execute script-one.sh now"
+#              /tmp/script-one.sh
+      restartPolicy: Never
