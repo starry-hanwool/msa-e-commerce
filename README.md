@@ -24,7 +24,8 @@
 
 상품(Product)은 아이템(Item)들로 구성되어 있고, 구매시 아이템을 원자단위로 취급하도록 하였다.
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/91b22bdf-3f3b-4c82-b108-c0f0737ef648/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/91b22bdf-3f3b-4c82-b108-c0f0737ef648/Untitled.png)
+![image](https://user-images.githubusercontent.com/73062660/106392788-d76a1f80-6436-11eb-9900-b240b05a810a.png)
+![image](https://user-images.githubusercontent.com/73062660/106392882-3b8ce380-6437-11eb-8af9-e4cf0ce6e074.png){: width="100" height="100"}
 
 모든 서비스는 쿠버네티스 위에 올려 볼 것이다.
 
