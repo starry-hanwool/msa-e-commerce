@@ -18,5 +18,4 @@ public class ItemDTO {
 
     private ProductDTO productDTO;
 
-//    private List<ProductItem> productItemList;
 }

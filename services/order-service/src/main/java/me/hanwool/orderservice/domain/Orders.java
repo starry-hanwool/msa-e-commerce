@@ -2,19 +2,17 @@ package me.hanwool.orderservice.domain;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import me.hanwool.mallutilapp.value.Money;
 import me.hanwool.mallutilapp.value.OrderStatus;
 import me.hanwool.orderservice.domain.value.MoneyJPA;
-import org.springframework.data.annotation.Version;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
-//@Builder
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,8 +21,8 @@ public class Orders {
     @Id @GeneratedValue
     private Long orderId;
 
-    @Column(nullable = false)
-    private Long orderNum;
+    @Column(nullable = false, unique = true, length = 40)
+    private String orderNum;
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
     private List<OrderLine> orderLineList;
@@ -44,9 +42,7 @@ public class Orders {
     private LocalDateTime createdDate;
 
     @Builder
-    public Orders(Long orderId, Long orderNum, int version, List<OrderLine> orderLineList, OrderStatus status, LocalDateTime createdDate) {
-//        Assert.notNull(orderNum, "orderNum must not be null");
-//        Assert.notNull(status, "status must not be null");
+    public Orders(Long orderId, String orderNum, int version, List<OrderLine> orderLineList, OrderStatus status, LocalDateTime createdDate) {
         this.orderId = orderId;
         this.orderNum = orderNum;
         this.orderLineList = orderLineList;
@@ -54,8 +50,15 @@ public class Orders {
         this.createdDate = createdDate;
     }
 
-//    public boolean validate() {
-//
-//
-//    }
+    // 주문번호 생성
+    public void generateOrderNum() {
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        String randomStr = String.valueOf(1000 + new SecureRandom().nextInt(1000000000));
+        String orderNum = now + randomStr;
+
+        // 주문번호 중복시 처리 필요
+        // ...
+
+        this.orderNum = orderNum;
+    }
 }

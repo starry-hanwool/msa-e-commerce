@@ -16,9 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,7 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@Transactional
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(OrderAPI.class)
 @ActiveProfiles("logging-test")
@@ -38,9 +35,6 @@ class orderAPITest {
     @Autowired
     private MockMvc mockMvc;
 
-//    @InjectMocks
-//    private OrderAPI orderAPI;
-
     @MockBean
     private OrderRepository repository;
 
@@ -50,47 +44,6 @@ class orderAPITest {
     @Autowired
     private ObjectMapper mapper;
 
-    /*@BeforeEach
-    public void setup() {
-//        MockitoAnnotations.openMocks(this);
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(orderAPI)
-                .setControllerAdvice(new APIExceptionHandler())
-//                .addDispatcherServletCustomizer(
-//                        dispatcherServlet -> dispatcherServlet.setThrowExceptionIfNoHandlerFound(true))
-//                .setControllerAdvice(
-//                        APIExceptionHandler.class)
-                .build();
-    }*/
-
-/*    @Nested
-    @DisplayName("주문 요청")
-    class placeOrder {
-
-        @Test
-        @DisplayName("가주문 생성 성공")
-        void placeOrderSuccess() throws Exception {
-            // given
-            final Long requestOrderNum = 20210112L;
-
-            final OrderDTO requestOrderAgg = OrderDTO.builder()
-//            final OrderAggregate requestOrderAgg = OrderAggregate.builder()
-                    .orderNum(requestOrderNum)
-                    .build();
-
-//            final Orders requestOrder = Orders.builder()
-//                    .orderNum(requestOrderNum)
-//                    .build();
-
-            given(service.createOrder(requestOrderAgg)).willReturn(requestOrderAgg);
-//            given(service.createOrder(requestOrder)).willReturn(requestOrder);
-
-            postExpectedBody(requestOrderAgg, HttpStatus.OK)
-                    .andExpect(jsonPath("$.orderNum").value(requestOrderNum));
-
-        }
-    }*/
-
     @Nested
     @DisplayName("주문 정보 조회")
     class getOrderById {
@@ -99,18 +52,14 @@ class orderAPITest {
         @DisplayName("성공")
         void getOrderByIdSuccess() throws Exception {
             // given
-            final Long requestOrderNum = 20120112111L;
-//            final Long requestOrderId = 1L;
+            final String requestOrderNum = "20120112111";
             final Orders orders = Orders.builder()
-//                    .orderId(requestOrderId)
                     .orderNum(requestOrderNum)
                     .build();
             given(service.getOrder(requestOrderNum)).willReturn(orders);
 
             // when, then
             getExpectedBody(String.valueOf(requestOrderNum), HttpStatus.OK)
-//            getExpectedBody(String.valueOf(requestOrderId), HttpStatus.OK)
-//                    .jsonPath("$.orderId").isEqualTo(requestOrderId);
                     .andExpect(jsonPath("$.orderNum").value(requestOrderNum));
         }
 
@@ -118,21 +67,19 @@ class orderAPITest {
         @DisplayName("실패 - 정보 없음")
         void getOrderByIdNotFound() throws Exception {
             // given
-            final Long requestOrderId = 1L;
-            given(service.getOrder(requestOrderId)).willReturn(null);
+            final String requestOrderNum = "2021112222";
+            given(service.getOrder(requestOrderNum)).willReturn(null);
 
             // when, then
-            mockMvc.perform(get(ORDER_API_URI + requestOrderId)
+            mockMvc.perform(get(ORDER_API_URI + requestOrderNum)
                     .accept(APPLICATION_JSON_VALUE))
                     .andExpect(status().is4xxClientError());
-
         }
     }
 
     //
 
     private ResultActions postExpectedBody(OrderDTO orderAggregate, HttpStatus expectedStatus) throws Exception {
-//    private ResultActions postExpectedBody(OrderAggregate orderAggregate, HttpStatus expectedStatus) throws Exception {
         String content = mapper.writeValueAsString(orderAggregate);
 
         return mockMvc.perform(post(ORDER_API_URI)

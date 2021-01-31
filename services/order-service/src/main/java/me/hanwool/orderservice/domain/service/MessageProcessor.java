@@ -17,8 +17,6 @@ public class MessageProcessor {
 
     private final OrderServiceImpl orderService;
 
-//    private final ObjectMapper mapper;
-
     @Autowired
     public MessageProcessor(OrderServiceImpl orderService) {
         this.orderService = orderService;
@@ -38,19 +36,12 @@ public class MessageProcessor {
 
             case ORDER_CREATE:
                 OrderDTO orderDTO = mapper.convertValue(event.getData(), OrderDTO.class);
-//                OrderDTO orderDTO = mapper.convertValue(event.getData(), new TypeReference<OrderDTO>() {});
-
-                Long orderNum = orderDTO.getOrderNum();
-                log.info("Create order with orderNum: {}", orderNum);
 
                 // 가주문 생성
                 OrderDTO result = orderService.createOrder(orderDTO);
+                log.info("Created order with orderNum: {}", result.getOrderNum());
 
-                // 생성 완료
-//                messageSources.outputComposite().send(MessageBuilder.withPayload(new Event(Event.Type.ORDER_CREATED, orderNum, result)).build());
-                // 주문 거부
-
-                return new Event(Event.Type.ORDER_CREATED, orderNum, result);
+                return new Event(Event.Type.ORDER_CREATED, event.getKey(), result);
 
             default:
                 String errorMessage = "Incorrect event type: " + event.getEventType() + ", expected event";

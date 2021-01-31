@@ -2,7 +2,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: order
-  namespace: order-space
 spec:
   selector:
     app: order
@@ -14,7 +13,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: order-deployment
-  namespace: order-space
   labels:
     app: order
 spec:
@@ -40,27 +38,23 @@ spec:
               value: stage
             - name: TZ
               value: Asia/Seoul
-            - name: DB_HOST   # Setting Database host address from configMap
-#              value: mysql.order-space.svc.cluster.local:3306
+            - name: DB_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: order-configmap  # name of configMap
+                  name: order-configmap
                   key: db_host
-            - name: DB_NAME  # Setting Database name from configMap
-#              value: orders
+            - name: DB_NAME
               valueFrom:
                 configMapKeyRef:
                   name: order-configmap
                   key: db_name
-            - name: DB_USERNAME  # Setting Database username from Secret
-#              value: order_admin
-              valueFrom:
-                secretKeyRef:
-                  name: order-secret # Secret Name
-                  key: username
-            - name: DB_PASSWORD # Setting Database password from Secret
-#              value: hanwool
+            - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: order-secret
-                  key: password
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hw-chart-mysql
+                  key: mysql-password

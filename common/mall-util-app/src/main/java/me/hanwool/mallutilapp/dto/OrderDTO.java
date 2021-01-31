@@ -15,21 +15,17 @@ import java.util.List;
 @ToString
 public class OrderDTO {
 
-    private Long orderId;
-    private Long orderNum;
+    private String orderNum;
     private List<OrderLineDTO> orderLineList;
-    private Long couponId;
     private OrderStatus status;
 
     @JsonCreator
     @Builder(builderClassName = "defaultBuilder")
-    public OrderDTO(@JsonProperty("orderId") Long orderId, @JsonProperty("orderNum") Long orderNum,
-                    @JsonProperty("orderLineList") List<OrderLineDTO> orderLineList, @JsonProperty("couponId") Long couponId,
+    public OrderDTO(@JsonProperty("orderNum") String orderNum,
+                    @JsonProperty("orderLineList") List<OrderLineDTO> orderLineList,
                     @JsonProperty("status") OrderStatus status) {
-        this.orderId = orderId;
         this.orderNum = orderNum;
         this.orderLineList = orderLineList;
-        this.couponId = couponId;
         this.status = status;
     }
 }

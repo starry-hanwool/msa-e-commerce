@@ -5,5 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface OrderService {
 
-    Mono<OrderDTO> getOrder(Long orderId);
+    Mono<OrderDTO> getOrder(String orderNum);
 }

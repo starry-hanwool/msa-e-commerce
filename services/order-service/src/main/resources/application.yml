@@ -18,45 +18,16 @@ spring:
       default-topic: orders
     consumer:
       group-id: orderGroup
-#      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       enable-auto-commit: false
       auto-offset-reset: earliest
       properties:
         spring.json.trusted.packages: me.hanwool.mallutilapp.*
     producer:
-#      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
     bootstrap-servers: localhost:9092
-#    client-id: 1
-
-#spring.cloud.stream:
-#  defaultBinder: kafka
-#  default.contentType: application/json
-#  bindings:
-#    input:
-#      destination: orders
-#      group: ordersGroup
-#      durableSubscription: true
-#    output-composite:
-#      destination: composite
-##      producer:
-##        required-groups: auditGroup
-#
-#spring.cloud.stream.bindings.input.consumer:
-#  maxAttempts: 3
-#  backOffInitialInterval: 500
-#  backOffMaxInterval: 1000
-#  backOffMultiplier: 2.0
-#
-#spring.cloud.stream.kafka.bindings.input.consumer:
-#  enableDlq: true
-#
-#spring.cloud.stream.kafka.binder:
-#  brokers: 127.0.0.1
-#  defaultBrokerPort: 9092
 
 logging:
   level:
@@ -65,22 +36,14 @@ logging:
     org.apache.kafka: WARN
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-#    com:
-#      mysql:
-#        cj:
-#          jdbc: DEBUG
-#      zaxxer:
-#        hikari: DEBUG
+
 server:
   port: 7002
   error:
     include-message: always
 
-
-
 ## custom
 kafka.output.composite.topic: composite
-#kafka.output.coupon.topic: coupons
 kafka.input.topic: orders
 kafka.consumer.group.id: orderGroup
 
@@ -100,9 +63,7 @@ spring:
         default_batch_fetch_size: 100
     open-in-view: false
   kafka:
-    bootstrap-servers: kafka:9092 # docker-compose 용
-
-#spring.cloud.stream.kafka.binder.brokers: kafka
+    bootstrap-servers: kafka:9092
 
 server:
   port: 8080
@@ -111,20 +72,14 @@ server:
 spring:
   profiles: stage
   datasource:
-#    username: root
-#    url: jdbc:mysql://mysql-0.order-space.svc.cluster.local:3306/orders?characterEncoding=UTF-8&serverTimezone=UTC&autoReconnection=true
-#    url: jdbc:mysql://mysql-0.mysql.order-space.svc.cluster.local:3306/orders?characterEncoding=UTF-8&serverTimezone=UTC&autoReconnection=true
-#    password: Bq2y1SaayU
-#    platform: mysql
     url: jdbc:mysql://${DB_HOST}/${DB_NAME}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   kafka:
-    bootstrap-servers: kafka-0.kafka-headless.kafka.svc.cluster.local:9092
+    bootstrap-servers: hw-chart-kafka-0.hw-chart-kafka-headless.default.svc.cluster.local:9092
 
 server:
   port: 8077
-
 
 ---
 spring:
