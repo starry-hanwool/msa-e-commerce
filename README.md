@@ -25,7 +25,7 @@
 상품(Product)은 아이템(Item)들로 구성되어 있고, 구매시 아이템을 원자단위로 취급하도록 하였다.
 
 ![image](https://user-images.githubusercontent.com/73062660/106392788-d76a1f80-6436-11eb-9900-b240b05a810a.png)
-![image](https://user-images.githubusercontent.com/73062660/106392882-3b8ce380-6437-11eb-8af9-e4cf0ce6e074.png){: width="100" height="100"}
+<img src="https://user-images.githubusercontent.com/73062660/106392882-3b8ce380-6437-11eb-8af9-e4cf0ce6e074.png" width="150">
 
 모든 서비스는 쿠버네티스 위에 올려 볼 것이다.
 
@@ -47,13 +47,13 @@
     - 이 때 Kafka와 같은 MQ 서비스를 사이에 두고 메시지를 발행/구독 하는 형태로 통신함으로써, 장애 서비스의 복구시 해당 이벤트를 다시 수신할 수 있게되어 이벤트 유실의 가능성을 막을 수 있게 된다. 특히 Kafka의 경우 메시지를 디스크에 저장하기 때문에 장애 복구 능력이 뛰어나다.
     - 이 프로젝트에서는 orders와 composite라는 ***Topic***으로 이벤트를 주고 받는다.
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d0ae0cc5-9539-4680-b424-9eaf4103a5e4/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d0ae0cc5-9539-4680-b424-9eaf4103a5e4/Untitled.png)
+![image](https://user-images.githubusercontent.com/73062660/106393176-02557300-6439-11eb-8136-7c535e02839a.png)
 
 구매하기 요청시 가주문을 먼저 생성한 후 결제 금액 확인 등의 검증 작업을 한 후 상태를 전이한다.
 
 주문이 거부 되었을 경우는 차감된 재고를 복구하는 등의 ***보상 트랜잭션*** 처리를 해야한다.
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7ab9bbc7-1413-433d-be99-3f86d03b7237/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7ab9bbc7-1413-433d-be99-3f86d03b7237/Untitled.png)
+![image](https://user-images.githubusercontent.com/73062660/106393192-1f8a4180-6439-11eb-82b2-c49c486f7c97.png)
 
 ## 패키지 구조
 
@@ -71,9 +71,8 @@
         - 인바운드 어댑터, 포트 : 외부 요청에 의해 비즈니스 로직 수행
         - 아웃바운드 어댑터, 포트 : 비지니스 로직이 외부 시스템 호출
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/457b1213-b938-4f87-930d-6eb082539848/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/457b1213-b938-4f87-930d-6eb082539848/Untitled.png)
+<img src="https://user-images.githubusercontent.com/73062660/106393217-3d57a680-6439-11eb-8734-5716e9e8f827.png" width="220"> <img src="https://user-images.githubusercontent.com/73062660/106393228-49436880-6439-11eb-9a33-397f33f3353b.png" width="220"> <img src="https://user-images.githubusercontent.com/73062660/106393238-53fdfd80-6439-11eb-9245-307d64f7b836.png" width="240">
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a5cc214e-a5e7-4c6f-9480-2fda5dd3bc41/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a5cc214e-a5e7-4c6f-9480-2fda5dd3bc41/Untitled.png)
 
 ## 핵심 문제 해결
 
@@ -87,9 +86,9 @@
     그러므로 안전한 Seed를 기본으로 제공하는 SecureRandom 함수를 사용해 임의의 숫자를 생성해 주문번호를 만든다.
 
     ```java
-    				String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-            String randomStr = String.valueOf(1000 + new SecureRandom().nextInt(1000000000));
-            String orderNum = now + randomStr;
+    	String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        String randomStr = String.valueOf(1000 + new SecureRandom().nextInt(1000000000));
+        String orderNum = now + randomStr;
     ```
 
     고유한 값인 주문번호는 결제 연동시 PG사에도 제공해야하기 때문에 스펙을 맞추는 것이 좋다.
@@ -106,7 +105,7 @@
     우선 `ReplyingKafkaTemplate` 빈을 메시지 형태에 맞게 재정의 한다. 각 메시지가 순차적으로 처리되야 하기 때문에 key 값을 줘서 동일 파티션에 배정되도록 하고, GroupId를 지정하여 파티션에 배정된 메시지를 하나의 consumer가 독점적으로 처리하도록 한다.
 
     ```java
-    		@Bean
+    	@Bean
         public ReplyingKafkaTemplate<String, Event, Event> replyingKafkaTemplate(ProducerFactory<String, Event> pf,
                                                                                    ConcurrentKafkaListenerContainerFactory<Long, Event> factory) {
             ConcurrentMessageListenerContainer<String, Event> replyContainer = factory.createContainer(INPUT_COMPOSITE);
@@ -117,7 +116,7 @@
     ```
 
 ```java
-				// 주문 요청
+	// 주문 요청
         Event event = new Event(Event.Type.ORDER_CREATE, key, orderDTO);
         ProducerRecord<String, Event> record = new ProducerRecord<String, Event>(OUTPUT_ORDERS, key, event);
         RequestReplyFuture<String, Event, Event> future = replyingKafkaTemplate.sendAndReceive(record);
@@ -247,7 +246,8 @@ JUnit을 이용한 테스트 코드 작성으로 TDD 환경 구축
 
     Test에 성공하면 Test code를 기반으로 문서가 자동으로 생성된다.
 
-    ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/defe4a03-9452-4996-9bba-40c93a8c5697/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/defe4a03-9452-4996-9bba-40c93a8c5697/Untitled.png)
+    ![image](https://user-images.githubusercontent.com/73062660/106393269-80197e80-6439-11eb-8c7e-1d24933b0af4.png)
+
 
 # 쿠버네티스 환경 구축
 
@@ -264,7 +264,7 @@ JUnit을 이용한 테스트 코드 작성으로 TDD 환경 구축
     `minikube start`
     `minikube dashboard`
 
-        ![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/222a493c-83d2-4d75-bd61-7b1bc329eedf/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/222a493c-83d2-4d75-bd61-7b1bc329eedf/Untitled.png)
+    ![image](https://user-images.githubusercontent.com/73062660/106393284-96bfd580-6439-11eb-836f-afb43f393758.png)
 
     - 참고
         - [v1-18.docs.kubernetes.io/ko/docs/tasks/tools/install-minikube/](https://v1-18.docs.kubernetes.io/ko/docs/tasks/tools/install-minikube/)
