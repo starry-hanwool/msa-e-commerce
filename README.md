@@ -6,7 +6,7 @@
 ---
 
 - JAVA 12
-- Spring Boot 2.4.1
+- Spring Boot 2.3.7
 - JPA
 - Webflux
 - JUnit5
